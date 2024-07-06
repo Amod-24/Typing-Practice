@@ -1,7 +1,7 @@
 import { useContext } from "react";
-import apiContextProvider from "./Context";
+import apiContext from "./Context";
 export default function Result({setResult}){
-    const valueFromContext = useContext(apiContextProvider);
+    const valueFromContext = useContext(apiContext);
     function stylesOfButton(){
         return{
             backgroundColor : valueFromContext.dark_mode ? "transparent" : "rgb(170,170,170)",

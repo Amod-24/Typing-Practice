@@ -1,8 +1,8 @@
 import { memo } from "react";
 import { useContext } from "react";
-import apiContextProvider from "./Context";
+import apiContext from "./Context";
 const Cursor = memo(()=>{
-    const valueFromContext = useContext(apiContextProvider);
+    const valueFromContext = useContext(apiContext);
 
     return <div style={{
         backgroundColor: valueFromContext.dark_mode ? "yellow" : "black"

@@ -1,6 +1,6 @@
 import { useState, useContext, useEffect, useRef } from "react";
 import data from  "./database.json";
-import apiContextProvider from "./Context";
+import apiContext from "./Context";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faClock } from "@fortawesome/fontawesome-free-regular";
 import Cursor from "./Cursor";
@@ -8,7 +8,7 @@ import Cursor from "./Cursor";
 
 
 export default function Task({setResult}){
-    const valueFromContext = useContext(apiContextProvider);
+    const valueFromContext = useContext(apiContext);
     const [words, setWords] = useState([]);
     const [typedLetters, setTypedLetters] = useState("");
     const [wordLimit, setWordLimit] = useState(100);
@@ -91,11 +91,11 @@ export default function Task({setResult}){
                 valueFromContext.typedLetters = valueFromContext.typedLetters.slice(0,valueFromContext.typedLetters.length-1);
             }
             if(isValidKey(event)){
-                if((valueFromContext.typedLetters.slice(-1) === " " || valueFromContext.typedLetters.length === 0 )&& event.key === " " ){
+                if((valueFromContext.typedLetters.slice(-1) === " " || valueFromContext.typedLetters.length === 0 )&& (event.key === " ") ){
                     setTypedLetters((prev)=>prev)
                 }
                 else if(valueFromContext.typedLetters.split(" ").at(-1).length < 26 || 
-                        valueFromContext.typedLetters.split(" ").at(-1).length === 26 && event.key === " "){
+                        (valueFromContext.typedLetters.split(" ").at(-1).length === 26 && event.key === " ")){
                     setTypedLetters((prev)=>prev+event.key);
                     valueFromContext.typedLetters += event.key;
                 }
@@ -113,7 +113,7 @@ export default function Task({setResult}){
     useEffect(()=>{
         const crsr = window.document.querySelector(".cursor");
         if(crsr.getBoundingClientRect().y - valueFromContext.initialPositionOfCursor > 100 && 
-            valueFromContext.initialPositionOfCursor != 0 &&
+            valueFromContext.initialPositionOfCursor !== 0 &&
             valueFromContext.nextLine){
 
             valueFromContext.nextLine = false;
@@ -155,9 +155,9 @@ export default function Task({setResult}){
             return "letter incorrect"
         }
     }
-    const typedWords = typedLetters.split(" ").filter((w)=>w!="");
+    const typedWords = typedLetters.split(" ").filter((w)=>w!=="");
     function getCursouIdx(idx,l){
-        if(idx === typedWords.length-1 && l === typedWords.at(-1).length-1 && valueFromContext.typedLetters.slice(-1) != " "){
+        if(idx === typedWords.length-1 && l === typedWords.at(-1).length-1 && valueFromContext.typedLetters.slice(-1) !== " "){
             return true;
         }
         else{

@@ -1,10 +1,10 @@
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faKeyboard } from "@fortawesome/fontawesome-free-regular";
 import { useState, useContext } from "react";
-import apiContextProvider from "./Context";
+import apiContext from "./Context";
 
 export default function Header({changeMode}){
-  const valueFromContext = useContext(apiContextProvider);
+  const valueFromContext = useContext(apiContext);
     const[darkMode, setDarkMode] = useState(valueFromContext.dark_mode)
     return(
         <header>
