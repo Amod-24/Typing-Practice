@@ -1,24 +1,27 @@
-import logo from './logo.svg';
-import './App.css';
-
+import "./App.css";
+import { useContext, useState } from "react";
+import Header from "./Components/Header";
+import Task from "./Components/Task";
+import apiContextProvider from "./Components/Context";
+import Result from "./Components/result";
 function App() {
+  const valueFromContext = useContext(apiContextProvider);
+  const [result, setResult] = useState(valueFromContext.result);
+  const [darkMode, setDarkMode] = useState(true);
+  if(!localStorage.getItem("dark_mode")){
+    localStorage.setItem("dark_mode","true");
+  }
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
+    <apiContextProvider>
+      <body style={{
+        backgroundColor: localStorage.getItem("dark_mode") === "true" ? "rgb(4,4,4)" : "rgb(255,255,255)",
+      }}>
+        <Header changeMode={setDarkMode}/>
+        {!result && <Task setResult={setResult}/>}
+        {result && <Result setResult={setResult}/>}
+      </body>
+    </apiContextProvider>
+
   );
 }
 

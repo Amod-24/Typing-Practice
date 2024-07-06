@@ -1,38 +1,229 @@
-.App {
-  text-align: center;
+body{
+  background-color: rgb(4,4,4);
+  height: 100vh;
+  width: 100vw;
+
+}
+header{
+  display: flex;
+  justify-content: space-between;
+}
+.logo{
+  display: flex;
+  width: fit-content;
+  align-items: center;
+  justify-content: center;
+}
+.heading{
+  font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif ;
+  color: #FF9900;
+  display: flex;
+  font-size: 3vmin;
+  margin: 0 1vmin auto 0;
+}
+.darkmode{
+  color: white;
+  display: flex;
+  align-items: center;
+  width: 20vmin;
+  margin: 3vmin 2vmin auto auto;
+  font-size: 2vmin;
+  font-weight: 700;
+}
+.outerBox{
+  background-color: rgba(0, 0, 0, 0);
+  width: 4.5vmin;
+  height: 2vmin;
+  border-radius: 5vmin;
+  margin-left: 2vmin;
+  border: .5vmin solid #FF9900;
+  padding: 0;
+  transition: all .1s linear;
+}
+.filler{
+  height: 2vmin;
+  width: 4vmin;
+  border: none;
+  border-radius: 5vmin 0 0 5vmin;
+  background-color: #FF9900;
+  transition: all .1s linear;
+  margin-left: -.1vmin;
+}
+.outerBox:hover{
+  cursor: pointer;
+}
+.switch{
+  height: 2vmin;
+  width: 2vmin;
+  border-radius: 50%;
+  background-color: rgb(67, 67, 67);
+  transition: all .1s linear;
+  margin-top: -2vmin;
 }
 
-.App-logo {
-  height: 40vmin;
-  pointer-events: none;
-}
-
-@media (prefers-reduced-motion: no-preference) {
-  .App-logo {
-    animation: App-logo-spin infinite 20s linear;
-  }
-}
-
-.App-header {
-  background-color: #282c34;
-  min-height: 100vh;
+.task{
+  width: 90vw;
+  height: 70vh;
+  margin-left: 5vw;
+  padding-top: 3vh;
   display: flex;
   flex-direction: column;
   align-items: center;
+}
+.adjustment{
+  background-color: #1e1e1e;
+  color: #8f8f8f;
+  border-radius: 1.5vmin;
+  width: fit-content;
+  height: 5vmin;
+  display: flex;
   justify-content: center;
-  font-size: calc(10px + 2vmin);
+  align-items: center;
+  font-size: 3vmin;
+  padding: 1vmin;
+
+}
+.typingArea{
+  width: 80vw;
+  height: 100%;
+  font-size: 3vmax;
+  color: #8f8f8f;
+  overflow: auto;
+  overflow: hidden;
+  position: relative;
+  z-index: 0;
+  
+}
+.word{
+  display: inline-block;
+  height: 55px;
+  margin: 0px 5px;
+  font-size: 2.5rem;
+  transition: all .05s linear;
+}
+
+
+
+
+
+.timeAndClock{
+  display: flex;
+  justify-content: space-between;
+  width: fit-content;
+  height: 100%;
+  align-items: center;
+  margin: auto 3.5vmin auto 6vmin;
+
+}
+.seconds{
+  width: fit-content;
+  height: 100%;
+  display: flex;
+  justify-content: space-between;
+  margin: auto 6vmin auto 3.5vmin;
+}
+.seconds h3{
+  margin: auto 1vmin;
+  transition: all .01s linear;
+}
+.clock{
+  margin-top: 0.5vmin;
+  margin-right: 0.5vmin;
+  color: #FF9900;
+}
+.seconds h3:hover{
+  cursor: pointer;
+}
+.time:hover{
+  cursor: default;
+}
+
+
+.resultBox{
+  width: 40vw;
+  height: fit-content;
+  text-align: center;
+  margin: 10vh 30vw auto 30vw;
+  font-size: 10vw;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-evenly;
+  color: #FF9900;
+  font-weight: bold;
+}
+.resultBox:hover{
+  cursor: default;
+}
+.buttonsInResult{
+  display: flex;
+  justify-content: space-evenly;
+}
+.nextTaskBtn{
+  height: 10vmin;
+  width: 15vmin;
+  font-size: 4vmin;
+  border-radius: 2vmin;
+  border: 2px solid white;
   color: white;
+  background-color: transparent;
+  transition: all 0.1s linear;
 }
-
-.App-link {
-  color: #61dafb;
+.nextTaskBtn:hover{
+  cursor: pointer;
+  transform: scale(1.05);
 }
-
-@keyframes App-logo-spin {
-  from {
-    transform: rotate(0deg);
+.RetryTaskBtn{
+  height: 10vmin;
+  width: 15vmin;
+  font-size: 4vmin;
+  border-radius: 2vmin;
+  border: 2px solid white;
+  color: white;
+  background-color: transparent;
+  transition: all 0.1s linear;
+}
+.RetryTaskBtn:hover{
+  cursor: pointer;
+  transform: scale(1.05);
+}
+.wpm{
+  color: #ffffff;
+}
+@keyframes cursorBlink{
+  0%{
+      opacity: 1;
   }
-  to {
-    transform: rotate(360deg);
+  50%{
+      opacity: 0;
+  }
+  100%{
+      opacity: 1;
+  }
+}
+.cursor{
+  position: absolute;
+  display: inline-block;
+  transform: translateY(.4rem);
+  background-color: yellow;
+  width: 2px;
+  height: 2.5rem;
+  z-index: 1;
+}
+.correct{
+  color: #FF9900;
+}
+.incorrect{
+  color: red;
+}
+
+.restartIndicator{
+  margin-top: 7vh;
+  color: grey;
+  font-style: italic;
+  display: block;
+}
+@media only screen and (max-width: 600px) {
+  .restartIndicator{
+    display: none;
   }
 }
