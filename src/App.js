@@ -11,6 +11,7 @@ function App() {
   if(!localStorage.getItem("dark_mode")){
     localStorage.setItem("dark_mode","true");
   }
+  console.log("di")
   return (
     <apiContextProvider>
       <body style={{

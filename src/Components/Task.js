@@ -29,10 +29,10 @@ export default function Task({setResult}){
         setWords(valueFromContext.words);
     }
     useEffect(()=>{
-        if(valueFromContext.test == "new test"){
+        if(valueFromContext.test === "new test"){
             newTest();
         }
-        if(valueFromContext.test == "retry"){
+        if(valueFromContext.test === "retry"){
             setWords(valueFromContext.words);
         }
     },[])
@@ -70,9 +70,9 @@ export default function Task({setResult}){
                     valueFromContext.result = true;
                 },valueFromContext.timer*1000)
             }
-            if(event.key == "Tab"){
+            if(event.key === "Tab"){
                 event.preventDefault();
-                if(valueFromContext.typedLetters == ""){
+                if(valueFromContext.typedLetters === ""){
                     newTest();
                 }
                 else{
@@ -86,16 +86,16 @@ export default function Task({setResult}){
                     setYPositionOfWord(0);
                 }
             }
-            if(event.key == "Backspace"){
+            if(event.key === "Backspace"){
                 setTypedLetters((prev)=>prev.slice(0,prev.length-1));
                 valueFromContext.typedLetters = valueFromContext.typedLetters.slice(0,valueFromContext.typedLetters.length-1);
             }
             if(isValidKey(event)){
-                if((valueFromContext.typedLetters.slice(-1) == " " || valueFromContext.typedLetters.length == 0 )&& event.key == " " ){
+                if((valueFromContext.typedLetters.slice(-1) === " " || valueFromContext.typedLetters.length === 0 )&& event.key === " " ){
                     setTypedLetters((prev)=>prev)
                 }
                 else if(valueFromContext.typedLetters.split(" ").at(-1).length < 26 || 
-                        valueFromContext.typedLetters.split(" ").at(-1).length == 26 && event.key == " "){
+                        valueFromContext.typedLetters.split(" ").at(-1).length === 26 && event.key === " "){
                     setTypedLetters((prev)=>prev+event.key);
                     valueFromContext.typedLetters += event.key;
                 }
@@ -142,13 +142,13 @@ export default function Task({setResult}){
     function timerStyles(time){
         return(
             {
-                color:timer==time ? "#FF9900" : "#C6C6C6",
-                fontWeight:timer == time ? "800" : "400",
+                color:timer===time ? "#FF9900" : "#C6C6C6",
+                fontWeight:timer === time ? "800" : "400",
             }
         )
     }
     function getClassName(a,b){
-        if(a==b){
+        if(a===b){
             return "letter correct"
         }
         else{
@@ -157,7 +157,7 @@ export default function Task({setResult}){
     }
     const typedWords = typedLetters.split(" ").filter((w)=>w!="");
     function getCursouIdx(idx,l){
-        if(idx == typedWords.length-1 && l == typedWords.at(-1).length-1 && valueFromContext.typedLetters.slice(-1) != " "){
+        if(idx === typedWords.length-1 && l === typedWords.at(-1).length-1 && valueFromContext.typedLetters.slice(-1) != " "){
             return true;
         }
         else{
@@ -203,14 +203,14 @@ export default function Task({setResult}){
                 height:"165px"
             }}>
             <div className="typingArea">
-                {typedWords.length == 0 && <div style={{
+                {typedWords.length === 0 && <div style={{
                     transform:"translate(5px,.4rem)",
                     animation:displayTimeSlots && "cursorBlink 1s infinite",
                     backgroundColor : valueFromContext.dark_mode ? "yellow" : "black"
                 }} ref={divRef} className="cursor"></div>}
                 {words.map((word,idx)=>{
                     if(idx < typedWords.length){
-                        if(word.length == typedWords[idx].length){
+                        if(word.length === typedWords[idx].length){
                             return(
                                 <div style={stylesOfWord()} className="word">
                                     {word.split("").map((letter,l)=>{
@@ -265,9 +265,9 @@ export default function Task({setResult}){
                                 {word.split("").map((letter,l)=>{
                                     return(
                                         <span className="letter">{
-                                            valueFromContext.typedLetters.slice(-1) == " " &&
-                                            idx == typedWords.length &&
-                                            l == 0 &&
+                                            valueFromContext.typedLetters.slice(-1) === " " &&
+                                            idx === typedWords.length &&
+                                            l === 0 &&
                                             <Cursor/>}{letter}</span>
                                     )
                                 })}
