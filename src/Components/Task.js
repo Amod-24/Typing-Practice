@@ -172,7 +172,9 @@ export default function Task(){
         }
     }
     return(
-        <div className="task">
+        <div className="task" onClick={()=>{
+            window.document.querySelector(".inputField").focus()
+        }}>
             <div style={{
                 visibility:displayTimeSlots.current ? "visible" : "hidden",
             }} className="adjustment">
@@ -277,6 +279,10 @@ export default function Task(){
                     }
                 })}
             </div>
+            <input style={{
+                position:"absolute",
+                opacity:"0"
+            }} className="inputField"/>
             </div>
             <h3 style={{
                 display:displayTimeSlots.current ? "none" : "block",
