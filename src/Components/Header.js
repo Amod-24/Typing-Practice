@@ -3,7 +3,7 @@ import { faKeyboard } from "@fortawesome/fontawesome-free-regular";
 import { useState, useContext } from "react";
 import apiContext from "./Context";
 
-export default function Header({changeMode}){
+export default function Header(){
   const valueFromContext = useContext(apiContext);
     const[darkMode, setDarkMode] = useState(valueFromContext.dark_mode)
     return(
@@ -42,17 +42,16 @@ export default function Header({changeMode}){
             border:darkMode ? ".5vmin solid #FF9900" : ".5vmin solid black",
 
           }} onClick={()=>{
-            valueFromContext.dark_mode = !valueFromContext.dark_mode;
-            localStorage.setItem("dark_mode",valueFromContext.dark_mode ? "true" : "false");
-            setDarkMode(valueFromContext.dark_mode);
-            changeMode(valueFromContext.dark_mode);
+            valueFromContext.setDarkMode(!valueFromContext.dark_mode);
+            localStorage.setItem("dark_mode",darkMode ? "false" : "true");
+            setDarkMode(!darkMode);
             
           }}>
             <div className="filler" style={{
-                width:valueFromContext.dark_mode ? "3.5vmin" : "0px"
+                width:darkMode ? "3.5vmin" : "0px"
             }}></div>
             <div className="switch" style={{
-                transform:valueFromContext.dark_mode ? "translateX(2.55vmin)" : "translateX(0)",
+                transform:darkMode ? "translateX(2.55vmin)" : "translateX(0)",
 
             }}></div>
           </div>

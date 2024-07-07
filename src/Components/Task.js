@@ -7,26 +7,29 @@ import Cursor from "./Cursor";
 
 
 
-export default function Task({setResult}){
+export default function Task(){
     const valueFromContext = useContext(apiContext);
     const [words, setWords] = useState([]);
     const [typedLetters, setTypedLetters] = useState("");
-    const [wordLimit, setWordLimit] = useState(100);
-    const [timer, setTimer] = useState(localStorage.getItem("time") || "60");
-    const [displayTimeSlots, setDisplayTimeSlots] = useState(true);
-    const [countDown, setCountDown] = useState(localStorage.getItem("time") || "60");
+    const sentence = useRef("");
+    const wordLimit = useRef(100);
+    const displayTimeSlots = useRef(true);
+    const [timer, setTimer] = useState(parseInt(localStorage.getItem("time")) || 60);
+    const timeForTest = useRef(timer);
+    const [countDown, setCountDown] = useState(parseInt(localStorage.getItem("time")) || 60);
     const [YPositionOfWord, setYPositionOfWord] = useState(0);
-    const divRef = useRef(null);
+    const cursorRef = useRef(null);
+    const initialPositionOfCursor = useRef(0);
 
     function newTest(){
         const totalWords = data.database.toLowerCase().split(" ");
         const wordsForThisTest = []
-        for(let i = 0; i < wordLimit; i++){
+        for(let i = 0; i < wordLimit.current; i++){
             const idxOfWord = Math.floor(Math.random()*totalWords.length);
             wordsForThisTest.push(totalWords[idxOfWord])
         }
-        valueFromContext.words = [...wordsForThisTest];
-        setWords(valueFromContext.words);
+        valueFromContext.setWords([...wordsForThisTest]);
+        setWords([...wordsForThisTest]);
     }
     useEffect(()=>{
         if(valueFromContext.test === "new test"){
@@ -45,42 +48,38 @@ export default function Task({setResult}){
 
     function wpm(){
         const correctLetters = [...window.document.querySelectorAll(".correct")];
-        valueFromContext.final.wpm = Math.floor((correctLetters.length * 60)/(timer * 5));
+        valueFromContext.setFinal({wpm:Math.floor((correctLetters.length * 60)/(timeForTest.current * 5))});
     }
-
+    
     useEffect(()=>{
         let startTimer;
         let timeOverTimeInterval;
         function handleKeyPress(event){
-            if(valueFromContext.displayTimeSlots && isValidKey(event)){
-                if(divRef.current){
-                    valueFromContext.initialPositionOfCursor = divRef.current.getBoundingClientRect().y;
+            if(displayTimeSlots.current && isValidKey(event)){
+                if(cursorRef.current){
+                    initialPositionOfCursor.current = cursorRef.current.getBoundingClientRect().y;
                 }
-                valueFromContext.displayTimeSlots = false;
-                setDisplayTimeSlots(false);
+                displayTimeSlots.current = false;
                 startTimer = setInterval(()=>{
                     setCountDown((prev)=>prev-1);
                 },1000)
                 timeOverTimeInterval = setTimeout(()=>{
                     clearInterval(startTimer);
                     wpm();
-                    valueFromContext.displayTimeSlots = true;
-                    setDisplayTimeSlots(true);
-                    setResult(true);
-                    valueFromContext.result = true;
-                },valueFromContext.timer*1000)
+                    displayTimeSlots.current = true;
+                    valueFromContext.setResult(true);
+                },timeForTest.current*1000)
             }
             if(event.key === "Tab"){
                 event.preventDefault();
-                if(valueFromContext.typedLetters === ""){
+                if(sentence.current === "" && displayTimeSlots.current){
                     newTest();
                 }
                 else{
                     clearInterval(startTimer);
                     clearInterval(timeOverTimeInterval);
-                    valueFromContext.displayTimeSlots = true;
-                    valueFromContext.typedLetters = "";
-                    setDisplayTimeSlots(true);
+                    displayTimeSlots.current = true;
+                    sentence.current = "";
                     setTypedLetters("");
                     setCountDown(localStorage.getItem("time") || "60");
                     setYPositionOfWord(0);
@@ -88,21 +87,21 @@ export default function Task({setResult}){
             }
             if(event.key === "Backspace"){
                 setTypedLetters((prev)=>prev.slice(0,prev.length-1));
-                valueFromContext.typedLetters = valueFromContext.typedLetters.slice(0,valueFromContext.typedLetters.length-1);
+                sentence.current = sentence.current.slice(0,sentence.current.length-1);
             }
             if(isValidKey(event)){
-                if((valueFromContext.typedLetters.slice(-1) === " " || valueFromContext.typedLetters.length === 0 )&& (event.key === " ") ){
+                if((sentence.current.slice(-1) === " " || sentence.current.length === 0 )&& (event.key === " ") ){
                     setTypedLetters((prev)=>prev)
                 }
-                else if(valueFromContext.typedLetters.split(" ").at(-1).length < 26 || 
-                        (valueFromContext.typedLetters.split(" ").at(-1).length === 26 && event.key === " ")){
+                else if(sentence.current.split(" ").at(-1).length < 26 || 
+                        (sentence.current.split(" ").at(-1).length === 26 && event.key === " ")){
                     setTypedLetters((prev)=>prev+event.key);
-                    valueFromContext.typedLetters += event.key;
+                    sentence.current += event.key;
                 }
             }
         }
 
-        if(valueFromContext.displayTimeSlots){
+        if(displayTimeSlots.current){
             window.addEventListener("keydown",handleKeyPress);            
         }
         return(()=>{
@@ -112,8 +111,8 @@ export default function Task({setResult}){
 
     useEffect(()=>{
         const crsr = window.document.querySelector(".cursor");
-        if(crsr.getBoundingClientRect().y - valueFromContext.initialPositionOfCursor > 100 && 
-            valueFromContext.initialPositionOfCursor !== 0 &&
+        if(crsr.getBoundingClientRect().y - initialPositionOfCursor.current > 100 && 
+            initialPositionOfCursor.current !== 0 &&
             valueFromContext.nextLine){
 
             valueFromContext.nextLine = false;
@@ -122,21 +121,23 @@ export default function Task({setResult}){
             },200)
             setYPositionOfWord((prev)=>prev-55);
             const totalWords = data.database.split(" ");
+            const newWords = [...words];
             for(let i = 0; i < 30; i++){
                 const idxOfWord = Math.floor(Math.random()*totalWords.length);
-                valueFromContext.words.push(totalWords[idxOfWord]);
+                newWords.push(totalWords[idxOfWord]);
             }
-            setWords(valueFromContext.words);
+            valueFromContext.setWords(newWords)
+            setWords(newWords);
         }
-        if(crsr.getBoundingClientRect().y - valueFromContext.initialPositionOfCursor < 0){
+        if(crsr.getBoundingClientRect().y - initialPositionOfCursor.current < 0){
             setYPositionOfWord((prev)=>prev+55)
         }
     },[typedLetters])
     
     function handleTimerOptions(time){
+        timeForTest.current = time;
         setTimer(time);
         setCountDown(time);
-        valueFromContext.timer = time;
         localStorage.setItem("time",`${time}`);
     }
     function timerStyles(time){
@@ -157,7 +158,7 @@ export default function Task({setResult}){
     }
     const typedWords = typedLetters.split(" ").filter((w)=>w!=="");
     function getCursouIdx(idx,l){
-        if(idx === typedWords.length-1 && l === typedWords.at(-1).length-1 && valueFromContext.typedLetters.slice(-1) !== " "){
+        if(idx === typedWords.length-1 && l === typedWords.at(-1).length-1 && sentence.current.slice(-1) !== " "){
             return true;
         }
         else{
@@ -173,7 +174,7 @@ export default function Task({setResult}){
     return(
         <div className="task">
             <div style={{
-                visibility:displayTimeSlots ? "visible" : "hidden",
+                visibility:displayTimeSlots.current ? "visible" : "hidden",
             }} className="adjustment">
                 <div className="timeAndClock">
                     <FontAwesomeIcon className="clock" icon={faClock}/>
@@ -205,9 +206,9 @@ export default function Task({setResult}){
             <div className="typingArea">
                 {typedWords.length === 0 && <div style={{
                     transform:"translate(5px,.4rem)",
-                    animation:displayTimeSlots && "cursorBlink 1s infinite",
+                    animation:displayTimeSlots.current && "cursorBlink 1s infinite",
                     backgroundColor : valueFromContext.dark_mode ? "yellow" : "black"
-                }} ref={divRef} className="cursor"></div>}
+                }} ref={cursorRef} className="cursor"></div>}
                 {words.map((word,idx)=>{
                     if(idx < typedWords.length){
                         if(word.length === typedWords[idx].length){
@@ -265,7 +266,7 @@ export default function Task({setResult}){
                                 {word.split("").map((letter,l)=>{
                                     return(
                                         <span className="letter">{
-                                            valueFromContext.typedLetters.slice(-1) === " " &&
+                                            sentence.current.slice(-1) === " " &&
                                             idx === typedWords.length &&
                                             l === 0 &&
                                             <Cursor/>}{letter}</span>
@@ -278,7 +279,7 @@ export default function Task({setResult}){
             </div>
             </div>
             <h3 style={{
-                display:displayTimeSlots ? "none" : "block",
+                display:displayTimeSlots.current ? "none" : "block",
                 visibility:window.innerWidth < 600 ? "hidden" : "visible"
             }} className="restartIndicator">press Tab to restart</h3>
         </div>
