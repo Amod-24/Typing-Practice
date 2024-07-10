@@ -203,7 +203,11 @@ export default function Task(){
                 padding:"1vmin",
                 height:"165px"
             }}>
-            <div className="typingArea">
+            <div className="typingArea" onClick={()=>{
+                if(window.innerWidth <= 500 || window.innerHeight <= 600){
+                    window.document.querySelector(".inputField").focus();
+                }
+            }}>
                 {typedWords.length === 0 && <div style={{
                     transform:"translate(5px,.4rem)",
                     animation:displayTimeSlots.current && "cursorBlink 1s infinite",
@@ -277,6 +281,22 @@ export default function Task(){
                     }
                 })}
             </div>
+                <input onChange={(e)=>{
+                    if((e.target.value.at(-1 )=== " " && e.target.value.at(-2) === " ")||(e.target.value.split(" ").at(-1).length >= 20)){
+                        e.target.value = e.target.value.slice(0,-1);
+                    }
+                    if(e.target.value.at(-2) === "."){
+                        e.target.value = e.target.value.slice(0,-2) + " ";
+                    }
+                    setTypedLetters(e.target.value);
+                    sentence.current = e.target.value;
+                }} style={{
+                    position:"absolute",
+                    left:"0",
+                    width:"1px",
+                    display: window.innerHeight <= 500 || window.innerWidth <= 500 ? "block" : "none",
+                    opacity:"0"
+                }} className="inputField"/>
             </div>
             <h3 style={{
                 display:displayTimeSlots.current ? "none" : "block",
