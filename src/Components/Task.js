@@ -38,6 +38,9 @@ export default function Task(){
         if(valueFromContext.test === "retry"){
             setWords(valueFromContext.words);
         }
+        if(window.innerWidth <= 500 || window.innerHeight <= 600){
+            window.document.querySelector(".inputField").focus();
+        }
     },[])
     
 
@@ -282,6 +285,21 @@ export default function Task(){
                 })}
             </div>
                 <input onChange={(e)=>{
+                    if(displayTimeSlots.current){
+                        if(cursorRef.current){
+                            initialPositionOfCursor.current = cursorRef.current.getBoundingClientRect().y;
+                        }
+                        displayTimeSlots.current = false;
+                        let startTimer = setInterval(()=>{
+                            setCountDown((prev)=>prev-1);
+                        },1000)
+                        setTimeout(()=>{
+                            clearInterval(startTimer);
+                            wpm();
+                            displayTimeSlots.current = true;
+                            valueFromContext.setResult(true);
+                        },timeForTest.current*1000)
+                    }
                     if((e.target.value.at(-1 )=== " " && e.target.value.at(-2) === " ")||(e.target.value.split(" ").at(-1).length >= 20)){
                         e.target.value = e.target.value.slice(0,-1);
                     }
